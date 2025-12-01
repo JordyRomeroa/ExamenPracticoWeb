@@ -1,44 +1,36 @@
-<section class="p-6">
-
-  @if (pokemon.isLoading()) {
-    <p>Cargando...</p>
+<section class="min-h-screen flex items-center justify-center bg-slate-900 text-white p-6">
+  @if (pokemon.loadingDetail()) {
+    <p class="text-lg">Cargando Pokémon...</p>
   }
 
-  @if (pokemon.value()) {
+  @if (pokemon.detail(); as pkm) {
 
-    @let p = pokemon.value();
+    <div class="bg-slate-800 rounded-2xl shadow-xl p-8 max-w-xl w-full">
+      <h2 class="text-3xl font-bold mb-4 text-center">
+        {{ pkm.name | titlecase }}
+      </h2>
 
-    <article class="max-w-lg mx-auto shadow-xl p-6 rounded-xl bg-white space-y-4">
-
-      <header class="text-center">
-        <img class="mx-auto w-32" [src]="p.sprites.front_default" />
-
-        <h1 class="text-3xl font-bold capitalize">
-          {{ p.name }}
-        </h1>
-      </header>
-
-      <section>
-        <h2 class="font-semibold">Tipos</h2>
-
-        <ul class="flex gap-2">
-          @for (t of p.types; track t.type.name) {
-            <li class="badge badge-info">{{ t.type.name }}</li>
+      <div class="flex flex-col items-center mb-6">
+        <img
+          class="w-40 h-40 mb-4"
+          [src]="pkm.sprites.front_default"
+          alt="Imagen de {{ pkm.name }}"
+        />
+        <ul class="flex gap-3 flex-wrap justify-center">
+          @for (t of pkm.types; track t.slot) {
+            <li class="px-3 py-1 bg-purple-600 rounded-full text-sm">
+              {{ t.type.name | titlecase }}
+            </li>
           }
         </ul>
-      </section>
+      </div>
 
-      <section>
-        <p><strong>Altura:</strong> {{ p.height }}</p>
-        <p><strong>Peso:</strong> {{ p.weight }}</p>
-        <p><strong>Experiencia:</strong> {{ p.base_experience }}</p>
-        <p><strong>Movimientos:</strong> {{ p.moves.length }}</p>
-      </section>
-
-      <button class="btn btn-primary w-full" (click)="back()">Regresar</button>
-
-    </article>
+      <div class="space-y-2 text-slate-200">
+        <p><strong>Altura:</strong> {{ pkm.height }}</p>
+        <p><strong>Peso:</strong> {{ pkm.weight }}</p>
+        <p><strong>Experiencia base:</strong> {{ pkm.base_experience }}</p>
+      </div>
+    </div>
 
   }
-
 </section>

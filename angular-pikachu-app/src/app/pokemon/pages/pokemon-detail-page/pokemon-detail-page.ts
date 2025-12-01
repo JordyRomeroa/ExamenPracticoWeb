@@ -1,27 +1,20 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgIf, NgFor } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { PokemonService } from '../../services/pokemon-service';
+import {  TitleCasePipe } from '@angular/common';
 
 @Component({
+  selector: 'app-pokemon-detail-page',
   standalone: true,
-  imports: [NgIf, NgFor],
-  templateUrl: './pokemon-detail-page.html',
+  imports: [TitleCasePipe],
+  templateUrl: './pokemon-detail-page.html'
 })
 export class PokemonDetailPage {
-  id = '';
-  pokemon: any;
-
   constructor(
-    private route: ActivatedRoute,
-    private pokemonService: PokemonService,
-    private router: Router
+    public pokemon: PokemonService,
+    private route: ActivatedRoute
   ) {
-    this.id = this.route.snapshot.paramMap.get('id')!;
-    this.pokemon = this.pokemonService.detail(this.id);
-  }
-
-  back() {
-    this.router.navigate(['/home']);
+    const id = this.route.snapshot.paramMap.get('id')!;
+    this.pokemon.loadDetail(id);
   }
 }

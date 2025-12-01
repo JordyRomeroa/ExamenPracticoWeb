@@ -1,42 +1,49 @@
-<section class="p-6 space-y-6">
-
-  <header class="hero bg-base-200 p-6 rounded-xl">
-    <h1 class="text-3xl font-bold">
-      Total de Pokémon: {{ pokemons.value()?.count }}
-    </h1>
+<section class="min-h-screen flex flex-col items-center bg-slate-900 text-white p-6">
+  <header class="w-full max-w-4xl mb-6">
+    <h1 class="text-3xl font-bold mb-2">Pokédex</h1>
+    <p class="text-slate-300">
+      Explora el mundo Pokémon. Haz clic en un Pokémon para ver sus detalles.
+    </p>
   </header>
 
-  @if (pokemons.isLoading()) {
-    <p>Cargando...</p>
+  @if (pokemon.loadingList()) {
+    <p class="mt-10 text-lg">Cargando lista...</p>
   }
 
-  @if (pokemons.error()) {
-    <p>Error cargando datos</p>
-  }
+  @if (pokemon.list(); as data) {
 
-  @if (pokemons.value()) {
+    <div class="w-full max-w-4xl mb-4 flex justify-between items-center">
+      <p class="text-slate-200">
+        Total: <strong>{{ data.count }}</strong>
+      </p>
+      <p class="text-slate-400 text-sm">
+        Mostrando {{ pokemon.offset() + 1 }} - {{ pokemon.offset() + pokemon.limit() }}
+      </p>
+    </div>
 
-    <!-- Se guarda value en una variable para evitar paréntesis -->
-    @let data = pokemons.value();
-
-    <ul class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      @for (p of data.results; track p.name) {
-        <li>
-          <article class="p-4 shadow-lg bg-white rounded-xl flex justify-between">
-            <span class="capitalize">{{ p.name }}</span>
-
-            <button class="btn btn-outline btn-sm"
-                    (click)="goDetail(p.url)">
-              Ver detalles
-            </button>
-          </article>
-        </li>
+    <div class="w-full max-w-4xl grid grid-cols-2 sm:grid-cols-4 gap-4">
+      @for (item of data.results; track item.name) {
+        <a
+          [routerLink]="['/pokemon', item.name]"
+          class="bg-slate-800 rounded-xl p-4 shadow hover:bg-slate-700 transition cursor-pointer"
+        >
+          <p class="font-semibold text-lg">{{ item.name | titlecase }}</p>
+        </a>
       }
-    </ul>
+    </div>
 
-    <div class="flex justify-between mt-6">
-      <button class="btn" (click)="prevPage()">Anterior</button>
-      <button class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+    <div class="w-full max-w-4xl flex justify-between mt-6">
+      <button
+        class="btn btn-outline"
+        [disabled]="pokemon.offset() === 0"
+        (click)="prev()"
+      >
+        Anterior
+      </button>
+
+      <button class="btn btn-primary" (click)="next()">
+        Siguiente
+      </button>
     </div>
 
   }

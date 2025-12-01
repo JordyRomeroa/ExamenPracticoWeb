@@ -1,39 +1,31 @@
-import { Component, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormUtils } from '../../shared/form.utils';
-
-const USER = {
-  email: 'usuario@ups.edu.ec',
-  password: '123456',
-};
 
 @Component({
-  standalone: true,
   selector: 'app-login-page',
-  templateUrl: './login-page.html',
+  standalone: true,
   imports: [ReactiveFormsModule],
+  templateUrl: './login-page.html'
 })
 export class LoginPage {
-  error = signal('');
-  form: any;
+
+  form!: FormGroup;  
 
   constructor(private fb: FormBuilder, private router: Router) {
-    this.form = this.fb.group({
+   
+    this.form = this.fb.nonNullable.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
-  submit() {
-    const { email, password } = this.form.value;
-
-    if (email === USER.email && password === USER.password) {
-      this.router.navigate(['/home']);
-    } else {
-      this.error.set('Credenciales incorrectas');
+  onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
-  }
 
-  f = FormUtils;
+    this.router.navigate(['/home']);
+  }
 }

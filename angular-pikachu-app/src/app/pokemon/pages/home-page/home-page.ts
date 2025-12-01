@@ -1,49 +1,24 @@
-import { Component, signal, effect } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { PokemonService } from '../../services/pokemon-service';
+import { TitleCasePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
+  selector: 'app-home-page',
   standalone: true,
-  imports: [NgIf, NgFor],
-  templateUrl: './home-page.html',
+  imports: [ TitleCasePipe, RouterLink],
+  templateUrl: './home-page.html'
 })
 export class HomePage {
+  constructor(public pokemon: PokemonService) {}
 
-  offset = signal(0);
-  limit = 20;
-
-  // solo declaras, NO inicializas aquí
-  pokemons: any;
-
-  constructor(
-    private pokemonService: PokemonService,
-    private router: Router
-  ) {
-
-    // ✔ ahora sí puedes usar pokemonService
-    this.pokemons = this.pokemonService.list(this.offset(), this.limit);
-
-    effect(() => {
-      this.pokemons = this.pokemonService.list(
-        this.offset(),
-        this.limit
-      );
-    });
+  next() {
+    this.pokemon.offset.update((v) => v + 20);
   }
 
-  nextPage() {
-    this.offset.update(v => v + 20);
-  }
-
-  prevPage() {
-    if (this.offset() > 0) {
-      this.offset.update(v => v - 20);
+  prev() {
+    if (this.pokemon.offset() >= 20) {
+      this.pokemon.offset.update((v) => v - 20);
     }
-  }
-
-  goDetail(url: string) {
-    const id = url.split('/').at(-2)!;
-    this.router.navigate(['/pokemon', id]);
   }
 }
