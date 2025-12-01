@@ -1,0 +1,44 @@
+<section class="p-6">
+
+  @if (pokemon.isLoading()) {
+    <p>Cargando...</p>
+  }
+
+  @if (pokemon.value()) {
+
+    @let p = pokemon.value();
+
+    <article class="max-w-lg mx-auto shadow-xl p-6 rounded-xl bg-white space-y-4">
+
+      <header class="text-center">
+        <img class="mx-auto w-32" [src]="p.sprites.front_default" />
+
+        <h1 class="text-3xl font-bold capitalize">
+          {{ p.name }}
+        </h1>
+      </header>
+
+      <section>
+        <h2 class="font-semibold">Tipos</h2>
+
+        <ul class="flex gap-2">
+          @for (t of p.types; track t.type.name) {
+            <li class="badge badge-info">{{ t.type.name }}</li>
+          }
+        </ul>
+      </section>
+
+      <section>
+        <p><strong>Altura:</strong> {{ p.height }}</p>
+        <p><strong>Peso:</strong> {{ p.weight }}</p>
+        <p><strong>Experiencia:</strong> {{ p.base_experience }}</p>
+        <p><strong>Movimientos:</strong> {{ p.moves.length }}</p>
+      </section>
+
+      <button class="btn btn-primary w-full" (click)="back()">Regresar</button>
+
+    </article>
+
+  }
+
+</section>
